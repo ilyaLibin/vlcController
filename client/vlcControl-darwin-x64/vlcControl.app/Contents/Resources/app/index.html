@@ -1,0 +1,87 @@
+<!-- 456 263 -->
+<html>
+    <head>
+        <title>Example App</title>
+        <link rel="stylesheet" type="text/css" href="materialize.min.css">
+        <style type="text/css">
+            .icon:before {
+                content: "";
+                display: inline-block;
+                background-image: url('gestures.png');
+                height: 43px;
+                width: 30px;
+                background-size: 210px 43px;
+            }
+
+            .voldown:before { background-position: 0 0; }
+            .volup:before { background-position: -35px 0; }
+            .pause:before { background-position: -175px 0; }
+            .play:before { background-position: -70px 0; }
+        </style>
+    </head>
+
+    <body>
+        <div class="container s12 js-switch" style="margin-top: 20px">
+            <div class="switch">
+                <label>
+                    Off
+                    <input type="checkbox" id="switch">
+                    <span class="lever"></span>
+                    On
+                </label>
+            </div>
+        </div>
+
+        <div class="row">
+            <form class="col s12">
+                <div class="input-field col s3">
+                    <input id="port" placeholder="Port" type="number" class="validate">
+                </div>
+                <div class="input-field col s5">
+                    <input id="password" placeholder="Password" type="text" class="validate">
+                </div>
+                <div class="input-field col s4" style="margin-top: 25px;">
+                    <a class="waves-effect waves-light btn js-check  light-green js-btn-check">Check</a>
+                </div>
+            </form>
+        </div>
+
+        <div class="container s12" style="position: fixed; right: 0; left: 0; bottom:10px;">
+            <span class="icon play"> = play</span>
+            <span class="icon pause"> = pause</span>
+            <span class="icon volup"> = volume up</span>
+            <span class="icon voldown"> = volume down</span>
+        </div>
+
+        <script type="text/javascript">
+            window.$ = window.jQuery = require('jquery');
+        </script>
+
+        <script type="text/javascript">
+            (function() {
+                $switch = $('#switch');
+
+                $('.js-check').on('click', function(e) {
+                    port = $('#port').val();
+                    pass = $('#password').val();
+                    $.post('http://localhost:5000/check', {port: port, pass: pass})
+                    .done(function() {
+                        var $btn = $('.js-btn-check');
+                        $btn.text('Success');
+                        $btn.removeClass('teal').removeClass('red').addClass('light-green');
+                    })
+                    .fail(function() {
+                        var $btn = $('.js-btn-check');
+                        $btn.text('Failed');
+                        $btn.removeClass('teal').removeClass('light-green').addClass('red');
+                    })
+                })
+
+                $switch.on('change', function(e) {
+                    var val = this.checked;
+                    $.post('http://localhost:5000/switch', {value: (val ? 'on' : 'off')});
+                })
+            })();
+        </script>
+    </body>
+</html>
